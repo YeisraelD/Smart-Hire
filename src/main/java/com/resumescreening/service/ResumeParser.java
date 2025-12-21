@@ -62,15 +62,21 @@ public class ResumeParser {
     }
 
     private int estimateExperience(String text) {
-        Pattern expPattern = Pattern.compile("(\\d{1,2})\\+?\\s+years?");
-        Matcher matcher = expPattern.matcher(text.toLowerCase());
-        if (matcher.find()) {
+        // Robust regex for variations like "5 years", "10+ yrs", "3years", etc.
+        Pattern expPattern = Pattern.compile("(\\d{1,2})\\+?\\s*(years?|yrs?|yr?)", Pattern.CASE_INSENSITIVE);
+        Matcher matcher = expPattern.matcher(text);
+
+        int highestExperience = 0;
+        while (matcher.find()) {
             try {
-                return Integer.parseInt(matcher.group(1));
+                int years = Integer.parseInt(matcher.group(1));
+                if (years > highestExperience && years < 50) { // Capping at 50 to avoid outliers
+                    highestExperience = years;
+                }
             } catch (NumberFormatException e) {
-                return 0;
+                // Ignore
             }
         }
-        return 0;
+        return highestExperience;
     }
 }

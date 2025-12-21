@@ -3,82 +3,96 @@ package com.resumescreening.model;
 import java.util.ArrayList;
 import java.util.List;
 
-// represents a job candidate
-//Applied concept: Inheritance (extends person )
-
+/**
+ * Represents a job candidate.
+ * Applied Concept: Inheritance (extends Person).
+ */
 public class Candidate extends Person {
     private List<String> skills;
     private String education;
-    private int experienceYear;
-    private String rawText;  // full content of the resume
-    private double currentScore; // to store the latest analysis score
+    private int experienceYears;
+    private String rawText; // The full text content of the resume
+    private double currentScore; // To store the latest analysis score
 
-    public Candidate (String name, String phone,String email, String rawText){
-        super(name, phone , email);
+    public Candidate(String name, String email, String phone, String rawText) {
+        super(name, email, phone);
         this.rawText = rawText;
-        this.skills =  new ArrayList<>();
+        this.skills = new ArrayList<>();
     }
 
     @Override
-    public double calculateScore(){
-        // in a real scenario, this might have internal scoring logic based on profile
-        //but, for this project year is not only parameter we are comparing, there are other factors
-        // so the scoring is primarily driven by the api comparison
+    public double calculateScore() {
+        // In a real scenario, this might have internal scoring logic based on profile
+        // completeness.
+        // For this project, the scoring is primarily driven by the API comparison,
+        // so we might return the externally set score or a default.
         return currentScore;
     }
 
-    //getters and setters
-
-    public void setScore(double score){
+    public void setScore(double score) {
         this.currentScore = score;
     }
 
-    public List<String> getSkills(){
+    public double getCurrentScore() {
+        return currentScore;
+    }
+
+    // Getters and Setters
+    public List<String> getSkills() {
         return skills;
     }
 
-    public void addSkill(String skill){
+    public void addSkill(String skill) {
         this.skills.add(skill);
     }
 
-    public String getEducation(){
+    public String getEducation() {
         return education;
     }
 
-    public  void setEducation(String education){
+    public void setEducation(String education) {
         this.education = education;
     }
 
-    public int getExperienceYears(){
-        return experienceYear;
+    public int getExperienceYears() {
+        return experienceYears;
     }
 
-    public void setExperienceYears(int experienceYear){
-        this.experienceYear = experienceYear;
+    public void setExperienceYears(int experienceYears) {
+        this.experienceYears = experienceYears;
     }
 
-    public String getRawText(){
+    public String getRawText() {
         return rawText;
-    } // but for this here there is no a setter method , cause the original text form file is a permanent fact.
+    }
 
-    // Analytics felids
+    // Analytics Fields
     private List<String> matchedSkills = new ArrayList<>();
     private List<String> missingSkills = new ArrayList<>();
-    private String recommendedRole = "Generalist"; // Default value , until the system analysize the person, just assume they are a generalist
-                                                   // someone who does a bit of everything
-    public  List<String> getMatchedSkills(){
+    private String recommendedRole = "Generalist";
+    private String analysisDetails = "";
+
+    public String getAnalysisDetails() {
+        return analysisDetails;
+    }
+
+    public void setAnalysisDetails(String analysisDetails) {
+        this.analysisDetails = analysisDetails;
+    }
+
+    public List<String> getMatchedSkills() {
         return matchedSkills;
     }
 
-    public void setMatchedSkills(List<String> matchedSkills){
+    public void setMatchedSkills(List<String> matchedSkills) {
         this.matchedSkills = matchedSkills;
     }
 
-    public List<String> getMissingSkills(){
+    public List<String> getMissingSkills() {
         return missingSkills;
     }
 
-    public void setMissingSkills(List<String> missingSkills){
+    public void setMissingSkills(List<String> missingSkills) {
         this.missingSkills = missingSkills;
     }
 
@@ -86,15 +100,12 @@ public class Candidate extends Person {
         return recommendedRole;
     }
 
-    public void setRecommendedRole(String recommendedRole){
+    public void setRecommendedRole(String recommendedRole) {
         this.recommendedRole = recommendedRole;
     }
 
     @Override
-    public String toString(){
-        return String.format("%s (EXP: %d years) - Score: %.2f", getName(), experienceYear, currentScore);
+    public String toString() {
+        return String.format("%s (Exp: %d years) - Score: %.2f", getName(), experienceYears, currentScore);
     }
-
-
-
 }

@@ -68,7 +68,7 @@ public class GUIController {
         jdLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #555; -fx-font-size: 14px;");
         jdArea = new TextArea();
         jdArea.setPromptText("Paste Job Description here...");
-        jdArea.setPrefRowCount(8); // Increased Height
+        jdArea.setPrefRowCount(12); // Increased Height
         jdArea.setWrapText(true);
         jdArea.setStyle(
                 "-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #dcdcdc; -fx-control-inner-background: white; -fx-font-size: 13px;");
@@ -175,7 +175,7 @@ public class GUIController {
         detailsArea.setPromptText("Select a candidate above to see full skill gap analysis...");
         detailsArea.setStyle(
                 "-fx-control-inner-background: #fff; -fx-font-family: 'Consolas', monospace; -fx-font-size: 13px; -fx-border-color: #dcdcdc; -fx-border-radius: 5;");
-        detailsArea.setPrefRowCount(10); // Increased Height significantly
+        detailsArea.setPrefRowCount(15); // Increased Height significantly
 
         // Let lists expand
         VBox.setVgrow(resultsTable, javafx.scene.layout.Priority.ALWAYS);
@@ -183,15 +183,9 @@ public class GUIController {
 
         resultsTable.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
-                StringBuilder sb = new StringBuilder();
-                sb.append("CANDIDATE: ").append(newVal.getName()).append("\n");
-                sb.append("EMAIL:     ").append(newVal.getEmail()).append("\n");
-                sb.append("EXPERIENCE: ").append(newVal.getExperienceYears()).append(" Years\n");
-                sb.append("--------------------------------------------------\n");
-                sb.append("ROLE FIT:   ").append(newVal.getRecommendedRole()).append("\n");
-                sb.append("MATCH SKILLS: ").append(newVal.getMatchedSkills()).append("\n");
-                sb.append("MISSING SKILLS: ").append(newVal.getMissingSkills()).append("\n");
-                detailsArea.setText(sb.toString());
+                detailsArea.setText(newVal.getAnalysisDetails());
+            } else {
+                detailsArea.setText("");
             }
         });
 

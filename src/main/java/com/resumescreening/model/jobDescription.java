@@ -1,32 +1,31 @@
 package com.resumescreening.model;
 
-//Represents a job description
-//Applied oop concept: encapsulation
-
+/**
+ * Represents a Job Description.
+ * Applied Concept: Encapsulation.
+ */
 public class JobDescription {
     private String title;
     private String rawText;
 
-    public JobDescription(String title, String rawText){
+    public JobDescription(String title, String rawText) {
         this.title = title;
         this.rawText = rawText;
     }
 
-    // setters and getters
-
-    public String getTitle(){
+    public String getTitle() {
         return title;
     }
 
-    public void setTitle(String title){
+    public void setTitle(String title) {
         this.title = title;
     }
 
-    public String getRawText(){
+    public String getRawText() {
         return rawText;
     }
 
-    public void setRawTitle(String rawText){
+    public void setRawText(String rawText) {
         this.rawText = rawText;
     }
 }

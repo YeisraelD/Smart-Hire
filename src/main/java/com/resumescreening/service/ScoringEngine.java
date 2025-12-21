@@ -18,7 +18,7 @@ import org.json.JSONObject;
  */
 public class ScoringEngine {
 
-    private static final String API_URL = "https://api-inference.huggingface.co/models/sentence-transformers/all-MiniLM-L6-v2";
+    private static final String API_URL = "https://router.huggingface.co/hf-inference/models/sentence-transformers/all-MiniLM-L6-v2";
     private String apiKey;
 
     public ScoringEngine(String apiKey) {
@@ -80,57 +80,198 @@ public class ScoringEngine {
 
     // Fallback method (Polymorphic-ish behavior based on availability / condition)
     private double basicKeywordScore(String resume, String jd) {
-        // Also perform the detailed analysis here so it's obtainable even in basic mode
-        return 0.0; // The caller (calculateScore) will handle the logic flow, wait, let's refactor
-                    // slightly.
+        String jdText = jd.toLowerCase();
+        String resumeText = resume.toLowerCase();
+
+        String[] technicalSkills = {
+                "java", "python", "c++", "c#", "golang", "rust", "php", "ruby", "swift", "kotlin",
+                "javascript", "typescript", "html", "css", "react", "angular", "vue", "next.js", "node.js",
+                "spring", "hibernate", "django", "flask", "express", "asp.net", "laravel",
+                "sql", "mysql", "postgresql", "mongodb", "redis", "oracle", "sql server",
+                "docker", "kubernetes", "aws", "azure", "gcp", "terraform", "ansible",
+                "git", "maven", "gradle", "jenkins", "ci/cd", "linux", "agile", "scrum", "devops",
+                "machine learning", "data science", "nlp", "rest api", "graphql", "microservices"
+        };
+
+        int totalRequired = 0;
+        int matched = 0;
+
+        for (String skill : technicalSkills) {
+            if (jdText.contains(skill)) {
+                totalRequired++;
+                if (resumeText.contains(skill)) {
+                    matched++;
+                }
+            }
+        }
+
+        if (totalRequired == 0)
+            return 50.0; // Neutral score if no specific keywords found
+        return (double) matched / totalRequired * 100;
     }
 
     /**
      * Performs a detailed analysis of the candidate against the JD.
-     * Updates the Candidate object with matched/missing skills.
+     * Updates the Candidate object with matched/missing skills and detailed
+     * analysis.
      */
     public void performSkillAnalysis(Candidate candidate, JobDescription jd) {
         String jdText = jd.getRawText().toLowerCase();
         String resumeText = candidate.getRawText().toLowerCase();
 
-        // A simple predefined list of common tech skills for demonstration
-        // in a real app, this would be dynamic or extracted via NLP
-        String[] commonSkills = {
-                "java", "python", "c++", "javascript", "typescript", "react", "angular", "vue",
-                "spring", "hibernate", "sql", "mysql", "postgresql", "mongodb", "docker", "kubernetes",
-                "aws", "azure", "gcp", "git", "maven", "gradle", "jenkins", "linux", "agile", "scrum"
+        // Comprehensive tech skills list
+        String[] technicalSkills = {
+                "java", "python", "c++", "c#", "golang", "rust", "php", "ruby", "swift", "kotlin",
+                "javascript", "typescript", "html", "css", "react", "angular", "vue", "next.js", "node.js",
+                "spring", "hibernate", "django", "flask", "express", "asp.net", "laravel",
+                "sql", "mysql", "postgresql", "mongodb", "redis", "oracle", "sql server",
+                "docker", "kubernetes", "aws", "azure", "gcp", "terraform", "ansible",
+                "git", "maven", "gradle", "jenkins", "ci/cd", "linux", "agile", "scrum", "devops",
+                "machine learning", "data science", "nlp", "rest api", "graphql", "microservices"
         };
 
-        List<String> jdRequiredSkills = new ArrayList<>();
-        for (String skill : commonSkills) {
+        // Soft skills list
+        String[] softSkills = {
+                "communication", "leadership", "teamwork", "problem solving", "critical thinking",
+                "adaptability", "time management", "creativity", "collaboration", "management"
+        };
+
+        // Education keywords
+        String[] educationKeywords = {
+                "bachelor", "master", "phd", "degree", "computer science", "engineering", "bsc", "msc"
+        };
+
+        List<String> matchedTech = new ArrayList<>();
+        List<String> missingTech = new ArrayList<>();
+        List<String> matchedSoft = new ArrayList<>();
+
+        // Analyze Technical Skills
+        for (String skill : technicalSkills) {
             if (jdText.contains(skill)) {
-                jdRequiredSkills.add(skill);
+                if (resumeText.contains(skill)) {
+                    matchedTech.add(skill);
+                } else {
+                    missingTech.add(skill);
+                }
             }
         }
 
-        List<String> matched = new ArrayList<>();
-        List<String> missing = new ArrayList<>();
-
-        for (String skill : jdRequiredSkills) {
+        // Analyze Soft Skills
+        for (String skill : softSkills) {
             if (resumeText.contains(skill)) {
-                matched.add(skill);
-            } else {
-                missing.add(skill);
+                matchedSoft.add(skill);
             }
         }
 
-        candidate.setMatchedSkills(matched);
-        candidate.setMissingSkills(missing);
+        candidate.setMatchedSkills(matchedTech);
+        candidate.setMissingSkills(missingTech);
 
-        // Simple heuristic for role recommendation
-        if (matched.contains("java") && matched.contains("spring")) {
-            candidate.setRecommendedRole("Java Backend Developer");
-        } else if (matched.contains("javascript") || matched.contains("react")) {
-            candidate.setRecommendedRole("Frontend Developer");
-        } else if (matched.contains("python")) {
-            candidate.setRecommendedRole("Python Developer");
+        // Advanced Role Recommendation logic
+        String role = determineRole(matchedTech);
+        candidate.setRecommendedRole(role);
+
+        // Build Detailed Analysis
+        StringBuilder analysis = new StringBuilder();
+        analysis.append("--- CANDIDATE ANALYSIS REPORT ---\n\n");
+
+        analysis.append("[1. TECHNICAL STRENGTHS]\n");
+        if (matchedTech.isEmpty()) {
+            analysis.append("- No specific technical skills from the requirement were identified.\n");
         } else {
-            candidate.setRecommendedRole("General Software Engineer");
+            for (String s : matchedTech) {
+                analysis.append("- Found proficiency in: ").append(s.toUpperCase()).append("\n");
+            }
         }
+        analysis.append("\n");
+
+        analysis.append("[2. SKILL GAPS]\n");
+        if (missingTech.isEmpty()) {
+            analysis.append("- Perfect match! No critical skill gaps identified.\n");
+        } else {
+            for (String s : missingTech) {
+                analysis.append("- Missing requirement: ").append(s.toUpperCase()).append("\n");
+            }
+        }
+        analysis.append("\n");
+
+        analysis.append("[3. SOFT SKILLS & QUALITIES]\n");
+        if (matchedSoft.isEmpty()) {
+            analysis.append("- Standard professional qualities implied.\n");
+        } else {
+            analysis.append("- Demonstrated: ").append(String.join(", ", matchedSoft)).append("\n");
+        }
+        analysis.append("\n");
+
+        analysis.append("[4. EXPERIENCE & EDUCATION]\n");
+        analysis.append("- Estimated Experience: ").append(candidate.getExperienceYears()).append(" years.\n");
+        boolean hasEdu = false;
+        for (String edu : educationKeywords) {
+            if (resumeText.contains(edu)) {
+                analysis.append("- Education noted: ").append(edu.substring(0, 1).toUpperCase() + edu.substring(1))
+                        .append(" detected.\n");
+                hasEdu = true;
+                break;
+            }
+        }
+        if (!hasEdu)
+            analysis.append("- Specific degree not explicitly parsed.\n");
+        analysis.append("\n");
+
+        analysis.append("[5. SUMMARY RECOMMENDATION]\n");
+        analysis.append(String.format("- Overall Match Score: %.1f%%\n", candidate.getCurrentScore()));
+
+        if (candidate.getCurrentScore() >= 70) {
+            analysis.append("EXCELLENT MATCH: Candidate is highly qualified for the ").append(role)
+                    .append(" role. Strongly recommend for interview.");
+        } else if (candidate.getCurrentScore() >= 40) {
+            analysis.append(
+                    "POTENTIAL MATCH: Candidate has solid foundations but some gaps. Recommended as a backup or for a junior ")
+                    .append(role).append(" position.");
+        } else {
+            analysis.append(
+                    "LOW MATCH: Candidate does not significantly meet the core requirements for this specific role.");
+        }
+
+        candidate.setAnalysisDetails(analysis.toString());
+    }
+
+    private String determineRole(List<String> matched) {
+        if (matched.isEmpty())
+            return "General Software Engineer";
+
+        int backend = 0, frontend = 0, data = 0, devops = 0;
+
+        if (matched.contains("java") || matched.contains("spring") || matched.contains("python")
+                || matched.contains("node.js"))
+            backend += 2;
+        if (matched.contains("sql") || matched.contains("postgresql") || matched.contains("mongodb"))
+            backend += 1;
+
+        if (matched.contains("javascript") || matched.contains("react") || matched.contains("angular")
+                || matched.contains("html") || matched.contains("css"))
+            frontend += 2;
+        if (matched.contains("typescript") || matched.contains("vue"))
+            frontend += 1;
+
+        if (matched.contains("machine learning") || matched.contains("data science") || matched.contains("nlp")
+                || matched.contains("python"))
+            data += 2;
+
+        if (matched.contains("docker") || matched.contains("kubernetes") || matched.contains("aws")
+                || matched.contains("jenkins") || matched.contains("devops"))
+            devops += 2;
+
+        if (data >= backend && data >= frontend && data >= devops && data > 0)
+            return "Data Scientist / ML Engineer";
+        if (devops >= backend && devops >= frontend && devops > 0)
+            return "DevOps Engineer";
+        if (backend > 0 && frontend > 0)
+            return "Fullstack Developer";
+        if (backend > frontend)
+            return "Backend Developer";
+        if (frontend > backend)
+            return "Frontend Developer";
+
+        return "Software Engineer";
     }
 }
