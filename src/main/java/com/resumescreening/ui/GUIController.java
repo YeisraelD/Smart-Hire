@@ -8,6 +8,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
@@ -47,10 +49,37 @@ public class GUIController {
         root.setStyle(
                 "-fx-padding: 30; -fx-alignment: top-left; -fx-font-family: 'Segoe UI', sans-serif; -fx-background-color: linear-gradient(to bottom right, #f4f6f8, #e0eafc);");
 
-        // Header
+        // Header Section with Logo
+        VBox headerBox = new VBox(15);
+        headerBox.setStyle("-fx-alignment: center; -fx-padding: 0 0 10 0;");
+
+        ImageView logoView = new ImageView();
+        try {
+            // Updated loading logic to be more resilient
+            java.io.InputStream is = getClass().getResourceAsStream("/images/logo.png");
+            if (is != null) {
+                Image logo = new Image(is);
+                logoView.setImage(logo);
+                logoView.setFitHeight(120); // Made it much bigger
+                logoView.setPreserveRatio(true);
+            } else {
+                System.err.println("Logo resource not found at /images/logo.png");
+            }
+        } catch (Exception e) {
+            System.err.println("Could not load logo: " + e.getMessage());
+        }
+
+        VBox titleBox = new VBox(5);
+        titleBox.setStyle("-fx-alignment: center;");
         Label header = new Label("Intelligent Resume Screener");
         header.setStyle(
                 "-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #2c3e50; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);");
+
+        Label subHeader = new Label("Powered by Smart Hire Technology");
+        subHeader.setStyle("-fx-font-size: 14px; -fx-text-fill: #7f8c8d; -fx-font-style: italic;");
+
+        titleBox.getChildren().addAll(header, subHeader);
+        headerBox.getChildren().addAll(logoView, titleBox);
 
         // API Key Section
         VBox apiBox = new VBox(5);
@@ -190,7 +219,7 @@ public class GUIController {
         });
 
         root.getChildren().addAll(
-                header,
+                headerBox,
                 apiBox,
                 jdBox,
                 controls,
