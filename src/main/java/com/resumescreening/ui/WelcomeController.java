@@ -79,7 +79,7 @@ public class WelcomeController {
         scaleUp.play();
 
         startButton.setStyle(
-                "-fx-background-color: linear-gradient(to right, #764ba2, #667eea); -fx-background-radius: 40; -fx-text-fill: white; -fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(102, 126, 234, 0.6), 25, 0, 0, 10);");
+                "-fx-background-color: linear-gradient(to right, #004080, #002d72); -fx-background-radius: 40; -fx-text-fill: white; -fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(0, 45, 114, 0.6), 25, 0, 0, 10);");
     }
 
     @FXML
@@ -90,6 +90,6 @@ public class WelcomeController {
         scaleDown.play();
 
         startButton.setStyle(
-                "-fx-background-color: linear-gradient(to right, #667eea, #764ba2); -fx-background-radius: 40; -fx-text-fill: white; -fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(102, 126, 234, 0.4), 20, 0, 0, 10);");
+                "-fx-background-color: linear-gradient(to right, #002d72, #00a2a7); -fx-background-radius: 40; -fx-text-fill: white; -fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(0, 45, 114, 0.3), 20, 0, 0, 10);");
     }
 }
