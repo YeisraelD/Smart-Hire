@@ -69,6 +69,3 @@ These principles are applied throughout the system to ensure maintainability and
 
 Smart Hire is an exploration of how software engineering principles and AI tools can be combined to solve a real world problem.
 The project emphasizes understanding, usability, and thoughtful design over unnecessary complexity.
-
-> The goal isn't just to build a system that reads resumes; it's to build a system that understands potential.
-
