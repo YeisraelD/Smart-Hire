@@ -1,5 +1,4 @@
-# Smart Hire
-### Smart Resume Analyzer
+Smart Resume Analyzer
 > From a CRUD to decision support system.
 
 Smart Hire is a JavaFX-based application created to make resume screening simpler, fairer, and more meaningful. Instead of relying on basic keyword matching, the system uses a pre-trained AI model to understand resumes in context and evaluate how well a candidate aligns with a job description.
