@@ -1,28 +1,19 @@
 # Smart Hire
 ### Smart Resume Analyzer
 > From a CRUD to decision support system.
---- 
+
 Smart Hire is a JavaFX-based application created to make resume screening simpler, fairer, and more meaningful. Instead of relying on basic keyword matching, the system uses a pre-trained AI model to understand resumes in context and evaluate how well a candidate aligns with a job description.
-
-This project was built as part of an academic Java/OOP project, with a strong focus on clean design, usability, and real-world relevance.
-
-### Why Smart Hire?
-
-- Resume screening is often:
-- Time consuming
-- Inconsistent
-- Heavily dependent on manual judgment
 
 Smart Hire explores how AI-assisted tools can support recruiters by providing clear insights, while still leaving the final decision to humans.
 
-### What the System Does
+What the System Does
 
-- Reads resumes in PDF and DOCX formats
-- Analyzes resumes using a pre-trained NLP model
-- Compares resumes with job descriptions semantically
-- Calculates a candidate relevance score
-- Highlights matched and missing skills
-- Presents results in a clean, interactive JavaFX interface
+Reads resumes in PDF and DOCX formats
+Analyzes resumes using a pre-trained NLP model
+Compares resumes with job descriptions semantically
+Calculates a candidate relevance score
+Highlights matched and missing skills
+Presents results in a clean, interactive JavaFX interface
 
 
 ### Intelligence Behind the System
